@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moflow English - Join Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .whatsapp-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Moflow English</h1>
+            <p>Welcome! Join our learning community</p>
+        </div>
+
+        <form id="onboardingForm">
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                <span class="error" id="nameError">Please enter your full name</span>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="+1234567890">
+                <span class="error" id="phoneError">Please enter your phone number</span>
+            </div>
+
+            <div class="form-group">
+                <label for="level">English Level *</label>
+                <select id="level" name="level" required>
+                    <option value="">Select your level</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+                <span class="error" id="levelError">Please select your level</span>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                Join Moflow English
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 15px; color: #666;">Processing...</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Replace these with your actual values
+        const CONFIG = {
+            SHEET_URL: 'https://script.google.com/macros/s/AKfycbwY904mHI1acCHebDdDBLvoMfshiGC6tWTrT2W6Uglx9vMwqVVVPpwzlfkK5nGIE4XUEQ/exec',
+            FEMALE_WHATSAPP: 'https://chat.whatsapp.com/Dt0wVTor9Jo3OFVzUgJUPT',
+            MALE_WHATSAPP: 'https://chat.whatsapp.com/GGjMo6YxYc3JYpHFDsdj3n'
+        };
+
+        // Moroccan/Arabic female and male names for detection
+        const FEMALE_NAMES = [
+            // Common Moroccan female names
+            'fatima', 'fatema', 'fatiha', 'khadija', 'khadidja', 'aicha', 'aisha', 'aysha',
+            'zainab', 'zaynab', 'zineb', 'malika', 'malak', 'meryem', 'mariam', 'maryam',
+            'salma', 'selma', 'sarah', 'sara', 'samira', 'samiha', 'sanaa', 'soumaya',
+            'soukaina', 'hafsa', 'hafida', 'hasna', 'hassnae', 'hind', 'houda', 'imane',
+            'iman', 'ikram', 'ilham', 'intissar', 'insaf', 'jamila', 'jamilah', 'jihane',
+            'karima', 'kawtar', 'kenza', 'laila', 'layla', 'leila', 'latifa', 'loubna',
+            'lamiaa', 'lamia', 'majda', 'manal', 'mouniya', 'mouna', 'nadia', 'naima',
+            'najat', 'najwa', 'nezha', 'nour', 'noura', 'rajaa', 'rajae', 'rahma',
+            'rachida', 'rabia', 'rania', 'safaa', 'safae', 'salwa', 'samia', 'siham',
+            'soumia', 'souad', 'wafaa', 'widad', 'yasmine', 'yasmina', 'yassmine', 'yousra',
+            'zakiya', 'zahra', 'zohra', 'amina', 'aminah', 'asma', 'asmaa', 'aziza',
+            'bahia', 'basma', 'boutaina', 'btissam', 'chaima', 'dounia', 'dounya', 'fadwa',
+            'fatna', 'firdaws', 'ghizlane', 'habiba', 'halima', 'hanane', 'hanan', 'hayat',
+            'ibtissam', 'jalila', 'kaoutar', 'kawtar', 'khadouj', 'lamyaa', 'lina', 'maria',
+            'mehdia', 'mina', 'nawal', 'rim', 'rihab', 'sabah', 'sabrine', 'saida',
+            'soundous', 'soulafa', 'soukayna', 'soukina', 'touria', 'wiam', 'yamna', 'zhor'
+        ];
+
+        const MALE_NAMES = [
+            // Common Moroccan male names
+            'mohammed', 'mohamed', 'muhammad', 'muhamad', 'med', 'mehdi', 'mahdi',
+            'ahmed', 'ahmad', 'hamza', 'hamzah', 'hassan', 'hasan', 'houssam', 'houssein',
+            'youssef', 'yousuf', 'yousef', 'youness', 'younès', 'anas', 'anass', 'omar',
+            'oumar', 'omar', 'ali', 'alae', 'alaeddine', 'amine', 'amin', 'adil', 'adel',
+            'abdelaziz', 'abdelilah', 'abdellah', 'abdallah', 'abdullah', 'abderrahim',
+            'abderrahmane', 'abdelkader', 'abdelkarim', 'abdessamad', 'abdellatif',
+            'said', 'saïd', 'saad', 'salah', 'salaheddine', 'salaheddin', 'soufiane',
+            'sofiane', 'samir', 'sameer', 'tarik', 'tariq', 'taoufik', 'tawfik', 'walid',
+            'waleed', 'yassine', 'yasin', 'yassin', 'zakaria', 'zakariya', 'karim', 'kamal',
+            'khalid', 'khaled', 'khalil', 'bilal', 'bilel', 'driss', 'idris', 'ismail',
+            'ismaïl', 'ismael', 'ibrahim', 'ilyas', 'iliass', 'imad', 'imade', 'issam',
+            'jamal', 'jamel', 'jawad', 'mounir', 'mustapha', 'mostafa', 'nabil', 'nabil',
+            'noureddine', 'noureddin', 'othmane', 'osman', 'othman', 'rachid', 'rashid',
+            'redouane', 'ridwan', 'ridwane', 'hicham', 'hisham', 'hakim', 'hafid', 'hafed',
+            'fouad', 'fawad', 'farid', 'fares', 'fadil', 'ezzeddine', 'elias', 'elyas',
+            'ayoub', 'ayyub', 'aymane', 'aimane', 'aziz', 'azzeddine', 'bachir', 'badr',
+            'brahim', 'chaouki', 'chakib', 'morad', 'mourad', 'murad', 'najib', 'nadir',
+            'omar', 'oussama', 'osama', 'rida', 'reda', 'sami', 'sohaib', 'yahya', 'yahia',
+            'yassir', 'yasser', 'zouhair', 'zouheir', 'anouar', 'anwar', 'larbi'
+        ];
+
+        function detectGender(fullName) {
+            const firstName = fullName.trim().toLowerCase().split(' ')[0];
+
+            // Check female names first
+            if (FEMALE_NAMES.includes(firstName)) {
+                return 'female';
+            }
+
+            // Check male names
+            if (MALE_NAMES.includes(firstName)) {
+                return 'male';
+            }
+
+            // Default to male if uncertain (you can change this logic)
+            return 'male';
+        }
+
+        document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const form = document.getElementById('onboardingForm');
+
+            // Get form data
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const level = document.getElementById('level').value;
+
+            // Detect gender based on name
+            const detectedGender = detectGender(fullName);
+            const whatsappLink = detectedGender === 'female' ? CONFIG.FEMALE_WHATSAPP : CONFIG.MALE_WHATSAPP;
+
+            // Prepare data for Google Sheets
+            const formData = {
+                timestamp: new Date().toISOString(),
+                fullName: fullName,
+                phone: phone,
+                level: level,
+                detectedGender: detectedGender
+            };
+
+            // Show loading
+            submitBtn.disabled = true;
+            form.style.display = 'none';
+            loading.style.display = 'block';
+
+            try {
+                // Send data to Google Sheets
+                const response = await fetch(CONFIG.SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                // Wait a moment for the data to be saved
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Redirect to appropriate WhatsApp group
+                window.location.href = whatsappLink;
+
+            } catch (error) {
+                console.error('Error:', error);
+                // Even if there's an error, redirect to WhatsApp
+                // The data might still have been saved
+                window.location.href = whatsappLink;
+            }
+        });
+
+        // Simple validation
+        document.getElementById('fullName').addEventListener('blur', function() {
+            if (this.value.trim().length < 2) {
+                document.getElementById('nameError').style.display = 'block';
+            } else {
+                document.getElementById('nameError').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
