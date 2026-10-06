@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1BA09C 0%, #2563EB 25%, #8B5CF6 50%, #D946A6 75%, #FB923C 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -35,15 +35,18 @@
             margin-bottom: 30px;
         }
 
-        .logo h1 {
-            color: #667eea;
-            font-size: 32px;
-            margin-bottom: 10px;
+        .logo-image {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
         }
 
         .logo p {
             color: #666;
             font-size: 16px;
+            margin-top: 10px;
         }
 
         .form-group {
@@ -53,6 +56,29 @@
         label {
             display: block;
             margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .label-bilingual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-en {
+            text-align: left;
+            direction: ltr;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .label-ar {
+            text-align: right;
+            direction: rtl;
             color: #333;
             font-weight: 500;
             font-size: 14px;
@@ -69,13 +95,52 @@
 
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #8B5CF6;
+        }
+
+        input.error-field, select.error-field {
+            border-color: #e53e3e;
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
+        }
+
+        /* Custom select dropdown styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B5CF6' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+
+        /* Phone input wrapper */
+        .phone-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .country-code {
+            width: 100px;
+            padding: 12px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #f9fafb;
+            color: #333;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .phone-input {
+            flex: 1;
         }
 
         .submit-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            background: linear-gradient(135deg, #8B5CF6 0%, #D946A6 50%, #FB923C 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -91,7 +156,7 @@
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
         }
 
         .submit-btn:active {
@@ -113,7 +178,8 @@
         .error {
             color: #e74c3c;
             font-size: 14px;
-            margin-top: 5px;
+            margin-top: 8px;
+            margin-bottom: 8px;
             display: none;
         }
 
@@ -125,7 +191,7 @@
 
         .loading-spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #8B5CF6;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -142,32 +208,48 @@
 <body>
     <div class="container">
         <div class="logo">
-            <h1>Moflow English</h1>
+            <img src="moflow logo background removed.png" alt="Moflow English Logo" class="logo-image">
             <p>Welcome! Join our learning community</p>
         </div>
 
         <form id="onboardingForm">
             <div class="form-group">
-                <label for="fullName">Full Name *</label>
+                <div class="label-bilingual">
+                    <span class="label-en">Full Name *</span>
+                    <span class="label-ar">الاسم الكامل *</span>
+                </div>
                 <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
                 <span class="error" id="nameError">Please enter your full name</span>
             </div>
 
             <div class="form-group">
-                <label for="phone">Phone Number *</label>
-                <input type="tel" id="phone" name="phone" required placeholder="+1234567890">
-                <span class="error" id="phoneError">Please enter your phone number</span>
+                <div class="label-bilingual">
+                    <span class="label-en">Phone Number *</span>
+                    <span class="label-ar">رقم الهاتف *</span>
+                </div>
+                <div class="phone-wrapper">
+                    <div class="country-code">🇲🇦 +212</div>
+                    <input type="tel" id="phone" name="phone" class="phone-input" required placeholder="06 00 00 00 00" pattern="[0-9]{10}">
+                </div>
+                <span class="error" id="phoneError">Please enter a valid phone number</span>
             </div>
 
             <div class="form-group">
-                <label for="level">English Level *</label>
-                <select id="level" name="level" required>
-                    <option value="">Select your level</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                <div class="label-bilingual">
+                    <span class="label-en">What do you want to improve? *</span>
+                    <span class="label-ar">شنو بغيتي تطور في اللغة؟ *</span>
+                </div>
+                <select id="goal" name="goal" required>
+                    <option value="">Select your goal / اختار الهدف ديالك</option>
+                    <option value="Start from scratch">Start from scratch / تبداها من الصفر</option>
+                    <option value="Useful Vocabulary">Useful Vocabulary / مفردات مفيدة</option>
+                    <option value="Grammar">Grammar / القواعد</option>
+                    <option value="Speaking Confidence">Speaking Confidence / الثقة فالهضرة بالإنجليزية</option>
+                    <option value="Overall English">Overall English / الإنجليزية بشكل عام</option>
+                    <option value="English for Work">English for Work / الإنجليزية للخدمة</option>
+                    <option value="English for School/University">English for School/University / الإنجليزية للقراية / الجامعة</option>
                 </select>
-                <span class="error" id="levelError">Please select your level</span>
+                <span class="error" id="goalError">Please select your goal / عافاك اختار الهدف</span>
             </div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
@@ -263,7 +345,7 @@
             // Get form data
             const fullName = document.getElementById('fullName').value.trim();
             const phone = document.getElementById('phone').value.trim();
-            const level = document.getElementById('level').value;
+            const goal = document.getElementById('goal').value;
 
             // Detect gender based on name
             const detectedGender = detectGender(fullName);
@@ -274,7 +356,7 @@
                 timestamp: new Date().toISOString(),
                 fullName: fullName,
                 phone: phone,
-                level: level,
+                goal: goal,
                 detectedGender: detectedGender
             };
 
@@ -312,8 +394,31 @@
         document.getElementById('fullName').addEventListener('blur', function() {
             if (this.value.trim().length < 2) {
                 document.getElementById('nameError').style.display = 'block';
+                this.classList.add('error-field');
             } else {
                 document.getElementById('nameError').style.display = 'none';
+                this.classList.remove('error-field');
+            }
+        });
+
+        document.getElementById('phone').addEventListener('blur', function() {
+            const phoneValue = this.value.trim();
+            if (phoneValue.length < 10) {
+                document.getElementById('phoneError').style.display = 'block';
+                this.classList.add('error-field');
+            } else {
+                document.getElementById('phoneError').style.display = 'none';
+                this.classList.remove('error-field');
+            }
+        });
+
+        document.getElementById('goal').addEventListener('blur', function() {
+            if (!this.value) {
+                document.getElementById('goalError').style.display = 'block';
+                this.classList.add('error-field');
+            } else {
+                document.getElementById('goalError').style.display = 'none';
+                this.classList.remove('error-field');
             }
         });
     </script>
