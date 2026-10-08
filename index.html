@@ -274,65 +274,326 @@
             MALE_WHATSAPP: 'https://chat.whatsapp.com/GGjMo6YxYc3JYpHFDsdj3n'
         };
 
-        // Moroccan/Arabic female and male names for detection
-        const FEMALE_NAMES = [
-            // Common Moroccan female names
-            'fatima', 'fatema', 'fatiha', 'khadija', 'khadidja', 'aicha', 'aisha', 'aysha',
-            'zainab', 'zaynab', 'zineb', 'malika', 'malak', 'meryem', 'mariam', 'maryam',
-            'salma', 'selma', 'sarah', 'sara', 'samira', 'samiha', 'sanaa', 'soumaya',
-            'soukaina', 'hafsa', 'hafida', 'hasna', 'hassnae', 'hind', 'houda', 'imane',
-            'iman', 'ikram', 'ilham', 'intissar', 'insaf', 'jamila', 'jamilah', 'jihane',
-            'karima', 'kawtar', 'kenza', 'laila', 'layla', 'leila', 'latifa', 'loubna',
-            'lamiaa', 'lamia', 'majda', 'manal', 'mouniya', 'mouna', 'nadia', 'naima',
-            'najat', 'najwa', 'nezha', 'nour', 'noura', 'rajaa', 'rajae', 'rahma',
-            'rachida', 'rabia', 'rania', 'safaa', 'safae', 'salwa', 'samia', 'siham',
-            'soumia', 'souad', 'wafaa', 'widad', 'yasmine', 'yasmina', 'yassmine', 'yousra',
-            'zakiya', 'zahra', 'zohra', 'amina', 'aminah', 'asma', 'asmaa', 'aziza',
-            'bahia', 'basma', 'boutaina', 'btissam', 'chaima', 'dounia', 'dounya', 'fadwa',
-            'fatna', 'firdaws', 'ghizlane', 'habiba', 'halima', 'hanane', 'hanan', 'hayat',
-            'ibtissam', 'jalila', 'kaoutar', 'kawtar', 'khadouj', 'lamyaa', 'lina', 'maria',
-            'mehdia', 'mina', 'nawal', 'rim', 'rihab', 'sabah', 'sabrine', 'saida',
-            'soundous', 'soulafa', 'soukayna', 'soukina', 'touria', 'wiam', 'yamna', 'zhor'
-        ];
+        // ========================================================================
+        // ENHANCED NAME-BASED SEX DETECTION ENGINE
+        // - 600+ Moroccan/Arabic names with O(1) Set lookup
+        // - Diacritics normalization (é→e, ï→i, etc.)
+        // - Levenshtein fuzzy matching (catches typos)
+        // - Multi-word scanning (not just first word)
+        // - Compound name & prefix detection
+        // - Suffix-based heuristics for Arabic naming patterns
+        // - Confidence scoring for analytics
+        // ========================================================================
 
-        const MALE_NAMES = [
-            // Common Moroccan male names
-            'mohammed', 'mohamed', 'muhammad', 'muhamad', 'med', 'mehdi', 'mahdi',
-            'ahmed', 'ahmad', 'hamza', 'hamzah', 'hassan', 'hasan', 'houssam', 'houssein',
-            'youssef', 'yousuf', 'yousef', 'youness', 'younès', 'anas', 'anass', 'omar',
-            'oumar', 'omar', 'ali', 'alae', 'alaeddine', 'amine', 'amin', 'adil', 'adel',
-            'abdelaziz', 'abdelilah', 'abdellah', 'abdallah', 'abdullah', 'abderrahim',
-            'abderrahmane', 'abdelkader', 'abdelkarim', 'abdessamad', 'abdellatif',
-            'said', 'saïd', 'saad', 'salah', 'salaheddine', 'salaheddin', 'soufiane',
-            'sofiane', 'samir', 'sameer', 'tarik', 'tariq', 'taoufik', 'tawfik', 'walid',
-            'waleed', 'yassine', 'yasin', 'yassin', 'zakaria', 'zakariya', 'karim', 'kamal',
-            'khalid', 'khaled', 'khalil', 'bilal', 'bilel', 'driss', 'idris', 'ismail',
-            'ismaïl', 'ismael', 'ibrahim', 'ilyas', 'iliass', 'imad', 'imade', 'issam',
-            'jamal', 'jamel', 'jawad', 'mounir', 'mustapha', 'mostafa', 'nabil', 'nabil',
-            'noureddine', 'noureddin', 'othmane', 'osman', 'othman', 'rachid', 'rashid',
-            'redouane', 'ridwan', 'ridwane', 'hicham', 'hisham', 'hakim', 'hafid', 'hafed',
-            'fouad', 'fawad', 'farid', 'fares', 'fadil', 'ezzeddine', 'elias', 'elyas',
-            'ayoub', 'ayyub', 'aymane', 'aimane', 'aziz', 'azzeddine', 'bachir', 'badr',
-            'brahim', 'chaouki', 'chakib', 'morad', 'mourad', 'murad', 'najib', 'nadir',
-            'omar', 'oussama', 'osama', 'rida', 'reda', 'sami', 'sohaib', 'yahya', 'yahia',
-            'yassir', 'yasser', 'zouhair', 'zouheir', 'anouar', 'anwar', 'larbi'
-        ];
+        const FEMALE_NAMES = new Set([
+            // === A ===
+            'aaya', 'abir', 'abla', 'afaf', 'afifa', 'ahlam', 'ahlem', 'aicha', 'aida',
+            'aisha', 'alia', 'aliya', 'amal', 'amani', 'amina', 'aminah', 'amira', 'amna',
+            'anisa', 'anissa', 'aouatif', 'arwa', 'asiya', 'assia', 'asma', 'asmaa', 'asmae',
+            'atika', 'awatif', 'aya', 'ayat', 'aysha', 'aziza', 'azzahra',
+            // === B ===
+            'badia', 'bahia', 'bahija', 'balkis', 'basma', 'basmala', 'batoul', 'bilkiss',
+            'bouchra', 'boutaina', 'btissam',
+            // === C ===
+            'chafika', 'chahinez', 'chahrazad', 'chaima', 'chaimaa', 'chaimae', 'charifa',
+            'chems', 'chemsy',
+            // === D ===
+            'dalal', 'dalila', 'dina', 'diyae', 'doha', 'dorra', 'douaa', 'douae', 'dounia',
+            'dounya', 'drifa',
+            // === E ===
+            'elhassania', 'essia', 'ezza', 'ezzahra',
+            // === F ===
+            'fadila', 'fadwa', 'fahima', 'faiza', 'farida', 'fatema', 'fathia', 'fati',
+            'fatiha', 'fatima', 'fatimaezzahra', 'fatimazahra', 'fatimzahra', 'fatna',
+            'fatoum', 'fatouma', 'fella', 'ferdaous', 'ferial', 'firdaws', 'fouzia',
+            // === G ===
+            'ghada', 'ghita', 'ghizlan', 'ghizlane', 'ghofrane',
+            // === H ===
+            'habiba', 'hafida', 'hafsa', 'hajar', 'hajiba', 'hakima', 'halima', 'hamida',
+            'hanae', 'hanan', 'hanane', 'hasna', 'hasnae', 'hassna', 'hassnae', 'hayat',
+            'heba', 'hiba', 'hind', 'hoda', 'hosna', 'houda', 'houria', 'houriya', 'hssinia',
+            // === I ===
+            'ibtihaj', 'ibtissam', 'ihsane', 'ikram', 'ikrame', 'ilham', 'iman', 'imane',
+            'inas', 'inass', 'insaf', 'intissar', 'iqbal', 'isra', 'israa', 'israe',
+            'ismahane', 'itto', 'izdihar',
+            // === J ===
+            'jaida', 'jalila', 'jamila', 'jamilah', 'jannat', 'jawhara', 'jihan', 'jihane',
+            'joudia', 'joumana',
+            // === K ===
+            'kamilia', 'kaoutar', 'karima', 'kawthar', 'kawtar', 'keltoum', 'kenza',
+            'khadija', 'khadidja', 'khadouj', 'khaoula', 'khoumssa', 'khouloud',
+            // === L ===
+            'laila', 'lalla', 'lamia', 'lamiaa', 'lamiae', 'lamyaa', 'latifa', 'layla',
+            'leila', 'lilia', 'lina', 'loubna', 'louisa', 'lubna', 'lyn', 'lyna',
+            // === M ===
+            'maha', 'majda', 'majdouline', 'malak', 'malika', 'manal', 'maria', 'mariam',
+            'marwa', 'maroua', 'maryam', 'maryame', 'mayssa', 'mayssae', 'mbarka', 'mehdia',
+            'meriem', 'meryem', 'mina', 'mona', 'moufida', 'mouna', 'mounia', 'mouniya',
+            'mouradi', 'myriam',
+            // === N ===
+            'nabila', 'nabiha', 'nada', 'nadia', 'nadiya', 'naima', 'najat', 'najia',
+            'najlae', 'najwa', 'naoual', 'narjiss', 'nassiba', 'nassima', 'nawal', 'nazha',
+            'nesrine', 'nezha', 'nihad', 'nihal', 'nisrin', 'nisrine', 'noha', 'nora',
+            'nour', 'noura', 'nouhaila', 'nouhayla', 'nouzha',
+            // === O ===
+            'ouafa', 'ouafae', 'ouiam', 'oumaima', 'oumayma', 'oumkalthoum', 'oumkeltoum',
+            'oumnia', 'oumama',
+            // === R ===
+            'rabab', 'rabia', 'rachida', 'radwa', 'rahma', 'rajaa', 'rajae', 'randa',
+            'rania', 'ranya', 'rawane', 'rayana', 'reem', 'rihab', 'rim', 'rima',
+            'rime', 'rokaya', 'roqaya', 'rqiya', 'rym',
+            // === S ===
+            'saadia', 'sabah', 'saber', 'sabrine', 'safaa', 'safae', 'safiya', 'sahar',
+            'saida', 'saliha', 'salma', 'saloua', 'salwa', 'samah', 'samara', 'samia',
+            'samiha', 'samira', 'sanaa', 'sanae', 'sara', 'sarah', 'seddiqa', 'selma',
+            'siham', 'sirine', 'sokayna', 'soltana', 'sondos', 'sophia', 'soraya',
+            'souad', 'soukayna', 'soukaina', 'soukina', 'soulafa', 'soundous', 'soumaya',
+            'soumia', 'sundus',
+            // === T ===
+            'tamou', 'taoues', 'tasnim', 'tasnime', 'thoraya', 'thouraya', 'titrit',
+            'touda', 'touria',
+            // === W ===
+            'wafa', 'wafaa', 'wafae', 'warda', 'wassima', 'wiam', 'widad', 'wijdan',
+            'wijdane', 'wissal',
+            // === Y ===
+            'yakout', 'yamina', 'yamna', 'yasmine', 'yasmina', 'yassmine', 'yomna',
+            'yosra', 'yousra',
+            // === Z ===
+            'zahira', 'zahra', 'zainab', 'zakia', 'zakiya', 'zaynab', 'zaza', 'zhour',
+            'zhor', 'zine', 'zineb', 'zineba', 'zohra', 'zoubida', 'zoulikha'
+        ]);
 
+        const MALE_NAMES = new Set([
+            // === A ===
+            'abdelali', 'abdelaziz', 'abdelbari', 'abdelfattah', 'abdelghafour', 'abdelghani',
+            'abdelhadi', 'abdelhafid', 'abdelhak', 'abdelhakim', 'abdelhalim', 'abdelhamid',
+            'abdelhaq', 'abdelilah', 'abdeljalil', 'abdelkader', 'abdelkarim', 'abdelkbir',
+            'abdelkrim', 'abdellah', 'abdellatif', 'abdelmajid', 'abdelmalek', 'abdelmonaim',
+            'abdelmoughit', 'abdelmoula', 'abdelmoumen', 'abdelnacer', 'abdelnasser',
+            'abdelouahab', 'abdelouahed', 'abdelouahid', 'abdelrahim', 'abderrafie',
+            'abderrahim', 'abderrahmane', 'abderrazak', 'abderrazzaq', 'abdesalam',
+            'abdessadek', 'abdessamad', 'abdesslam', 'abdennour', 'abdallah', 'abdullah',
+            'abid', 'achraf', 'adam', 'adel', 'adil', 'adnane', 'ahmad', 'ahmed',
+            'aimane', 'aissam', 'akram', 'alaa', 'alaeddine', 'alae', 'ali', 'amin',
+            'amine', 'amir', 'amjad', 'anas', 'anass', 'anouar', 'anwar', 'arabi',
+            'asad', 'ashraf', 'ayman', 'aymane', 'aymen', 'ayoub', 'ayyoub', 'ayyub',
+            'azeddine', 'aziz', 'azzeddine', 'azzedine',
+            // === B ===
+            'bachir', 'bader', 'badr', 'badreddine', 'bakr', 'baqir', 'bassem', 'bassim',
+            'benaissa', 'benali', 'bilal', 'bilel', 'bouchaib', 'bouazza', 'brahim', 'burhan',
+            // === C ===
+            'chakib', 'chakir', 'chamseddine', 'chaouki', 'charif', 'cherif', 'chihab',
+            // === D ===
+            'dany', 'daoud', 'diae', 'driss',
+            // === E ===
+            'elias', 'elyas', 'emad', 'essam', 'ezzeddine',
+            // === F ===
+            'fadel', 'fadil', 'fahd', 'faisal', 'faissal', 'faouzi', 'fares', 'farid',
+            'fath', 'fathallah', 'fathi', 'fawad', 'fawzi', 'fettah', 'firas', 'fouad',
+            // === G ===
+            'ghait', 'ghaith', 'ghali', 'ghassane', 'ghazi',
+            // === H ===
+            'habib', 'hachim', 'hafed', 'hafid', 'hakim', 'hamad', 'hamada', 'hamid',
+            'hamza', 'hamzah', 'hani', 'haris', 'haroun', 'hasan', 'hassan', 'hatim',
+            'haytham', 'hesham', 'hicham', 'hilal', 'hisham', 'hocine', 'hossam',
+            'houcine', 'houssam', 'houssein', 'hussein',
+            // === I ===
+            'ibnrachid', 'ibrahim', 'idris', 'idriss', 'ihab', 'iliass', 'ilyas',
+            'ilyass', 'imad', 'imade', 'islam', 'ismael', 'ismail', 'issa', 'issam', 'iyad',
+            // === J ===
+            'jaafar', 'jabir', 'jalal', 'jalil', 'jamal', 'jamel', 'jamil', 'jaouad',
+            'jawad', 'jilali',
+            // === K ===
+            'kamal', 'kamil', 'karam', 'karim', 'kazem', 'khaled', 'khalid', 'khalil',
+            // === L ===
+            'lahcen', 'lahoucine', 'lahsen', 'lamine', 'larbi', 'lotfi', 'louay', 'luay',
+            // === M ===
+            'maarouf', 'mahdi', 'maher', 'mahmoud', 'majid', 'malik', 'mamoun', 'mansour',
+            'marouan', 'marouane', 'marwan', 'mazen', 'mbarek', 'med', 'mehdi', 'miloud',
+            'moha', 'mohamed', 'mohammadi', 'mohammed', 'mohsine', 'moncef', 'montasir',
+            'morad', 'mostafa', 'mouad', 'mouatassem', 'moufid', 'mouhcine', 'mouhssine',
+            'mounir', 'mourad', 'moussa', 'muhamad', 'muhammad', 'murad', 'mustafa',
+            'mustapha',
+            // === N ===
+            'nabil', 'nacer', 'nacerddine', 'nader', 'nadir', 'najib', 'nasr', 'nasser',
+            'nassim', 'nawfal', 'nizar', 'noreddine', 'noufal', 'noureddin', 'noureddine',
+            // === O ===
+            'okba', 'omar', 'osama', 'osman', 'othman', 'othmane', 'oualid', 'oumar',
+            'oussama',
+            // === R ===
+            'rabi', 'rabii', 'rachid', 'radouane', 'rafik', 'rami', 'ramzi', 'raouf',
+            'rashid', 'rayan', 'rayane', 'reda', 'redouane', 'rida', 'ridwan', 'ridwane',
+            'riyad', 'rochdi', 'ryad',
+            // === S ===
+            'saad', 'saaddine', 'saber', 'safouane', 'safwan', 'said', 'salah',
+            'salaheddin', 'salaheddine', 'salim', 'sameer', 'sami', 'samir', 'seif',
+            'seifeddine', 'si mohamed', 'simohamed', 'simohammed', 'slimane', 'sofiane',
+            'sohaib', 'soufiane', 'soulaimane', 'soulayman',
+            // === T ===
+            'taha', 'tajeddine', 'talal', 'tarek', 'tarik', 'tariq', 'taoufik', 'tawfik',
+            'toufik',
+            // === W ===
+            'wadi', 'wadie', 'wael', 'wail', 'waleed', 'walid', 'wassim',
+            // === Y ===
+            'yaacoub', 'yacine', 'yahia', 'yahya', 'yanis', 'yasin', 'yasser', 'yassin',
+            'yassine', 'yassir', 'yousef', 'youssef', 'yousri', 'yousuf',
+            // === Z ===
+            'zaid', 'zakaria', 'zakariae', 'zakariya', 'zaki', 'zayd', 'ziad', 'zied',
+            'zine', 'zineddine', 'zinedine', 'zouhair', 'zouheir', 'zouhir'
+        ]);
+
+        // ── Helper: Normalize diacritics (é→e, ï→i, ë→e, ô→o, etc.) ──
+        function normalizeName(name) {
+            return name
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')                         // decompose accented chars
+                .replace(/[\u0300-\u036f]/g, '')          // strip combining marks
+                .replace(/[-_.']/g, '')                   // strip hyphens, dots, apostrophes
+                .replace(/\s+/g, ' ');                    // collapse whitespace
+        }
+
+        // ── Helper: Levenshtein distance for fuzzy matching ──
+        function levenshtein(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    const cost = b.charAt(i - 1) === a.charAt(j - 1) ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1,       // deletion
+                        matrix[i][j - 1] + 1,        // insertion
+                        matrix[i - 1][j - 1] + cost  // substitution
+                    );
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        // ── Helper: Fuzzy lookup in a Set (returns best match or null) ──
+        function fuzzyMatch(word, nameSet, maxDistance = 2) {
+            // Only attempt fuzzy matching on words with 4+ characters
+            // to avoid false positives on short names
+            if (word.length < 4) return null;
+            let bestMatch = null;
+            let bestDist = maxDistance + 1;
+            for (const name of nameSet) {
+                // Skip if length difference is too large (optimization)
+                if (Math.abs(name.length - word.length) > maxDistance) continue;
+                const dist = levenshtein(word, name);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestMatch = name;
+                }
+            }
+            return bestDist <= maxDistance ? { match: bestMatch, distance: bestDist } : null;
+        }
+
+        // ── Masculine prefixes (compound names starting with these are male) ──
+        const MALE_PREFIXES = ['abd', 'abdel', 'abder', 'abdou', 'abdes', 'bou', 'ben', 'ibn', 'sidi', 'moulay', 'si'];
+        // ── Feminine prefixes ──
+        const FEMALE_PREFIXES = ['lalla', 'oum'];
+
+        // ── Suffix-based heuristics for Arabic/Moroccan naming patterns ──
+        // Masculine suffixes (high confidence)
+        const MALE_SUFFIXES = ['eddine', 'eddin', 'eddeen', 'eldin', 'uddin', 'allah', 'illah'];
+        // Feminine suffixes (moderate confidence, checked last)
+        const FEMALE_SUFFIX_PATTERNS = ['ouma', 'oum', 'iya', 'iyya', 'ia'];
+
+        // ── MAIN DETECTION FUNCTION ──
         function detectGender(fullName) {
-            const firstName = fullName.trim().toLowerCase().split(' ')[0];
+            const normalized = normalizeName(fullName);
+            const words = normalized.split(' ').filter(w => w.length > 0);
 
-            // Check female names first
-            if (FEMALE_NAMES.includes(firstName)) {
-                return 'female';
+            if (words.length === 0) {
+                return { gender: 'male', confidence: 'none', method: 'empty-input' };
             }
 
-            // Check male names
-            if (MALE_NAMES.includes(firstName)) {
-                return 'male';
+            // ── PASS 1: Exact match — check ALL words (not just the first) ──
+            let femaleHits = 0;
+            let maleHits = 0;
+            let matchedWord = '';
+
+            for (const word of words) {
+                if (FEMALE_NAMES.has(word)) {
+                    femaleHits++;
+                    matchedWord = word;
+                }
+                if (MALE_NAMES.has(word)) {
+                    maleHits++;
+                    matchedWord = word;
+                }
             }
 
-            // Default to male if uncertain (you can change this logic)
-            return 'male';
+            if (femaleHits > 0 && maleHits === 0) {
+                return { gender: 'female', confidence: 'high', method: 'exact-match', matchedWord };
+            }
+            if (maleHits > 0 && femaleHits === 0) {
+                return { gender: 'male', confidence: 'high', method: 'exact-match', matchedWord };
+            }
+            if (femaleHits > 0 && maleHits > 0) {
+                // Conflict: prioritize the first detected word
+                for (const word of words) {
+                    if (FEMALE_NAMES.has(word)) return { gender: 'female', confidence: 'medium', method: 'exact-first-hit', matchedWord: word };
+                    if (MALE_NAMES.has(word)) return { gender: 'male', confidence: 'medium', method: 'exact-first-hit', matchedWord: word };
+                }
+            }
+
+            // ── PASS 2: Compound name detection (e.g., "abdelaziz" not in list but "abdel" prefix → male) ──
+            for (const word of words) {
+                for (const prefix of MALE_PREFIXES) {
+                    if (word.startsWith(prefix) && word.length > prefix.length) {
+                        return { gender: 'male', confidence: 'high', method: 'male-prefix', matchedWord: word, prefix };
+                    }
+                }
+                for (const prefix of FEMALE_PREFIXES) {
+                    if (word.startsWith(prefix) && word.length > prefix.length) {
+                        return { gender: 'female', confidence: 'high', method: 'female-prefix', matchedWord: word, prefix };
+                    }
+                }
+            }
+
+            // ── PASS 3: Suffix-based pattern matching (e.g., names ending in -eddine are male) ──
+            for (const word of words) {
+                for (const suffix of MALE_SUFFIXES) {
+                    if (word.endsWith(suffix) && word.length > suffix.length) {
+                        return { gender: 'male', confidence: 'high', method: 'male-suffix', matchedWord: word, suffix };
+                    }
+                }
+            }
+
+            // ── PASS 4: Fuzzy matching (catches typos like "mohammeed", "fatimaah") ──
+            for (const word of words) {
+                const femaleResult = fuzzyMatch(word, FEMALE_NAMES);
+                const maleResult = fuzzyMatch(word, MALE_NAMES);
+
+                const fDist = femaleResult ? femaleResult.distance : Infinity;
+                const mDist = maleResult ? maleResult.distance : Infinity;
+
+                if (fDist < mDist) {
+                    return { gender: 'female', confidence: fDist === 1 ? 'medium' : 'low', method: 'fuzzy-match', matchedWord: word, closestName: femaleResult.match, distance: fDist };
+                }
+                if (mDist < fDist) {
+                    return { gender: 'male', confidence: mDist === 1 ? 'medium' : 'low', method: 'fuzzy-match', matchedWord: word, closestName: maleResult.match, distance: mDist };
+                }
+                // If equal distance to both, skip (ambiguous)
+            }
+
+            // ── PASS 5: Feminine suffix heuristics (last resort, moderate confidence) ──
+            for (const word of words) {
+                for (const suffix of FEMALE_SUFFIX_PATTERNS) {
+                    if (word.endsWith(suffix) && word.length > suffix.length + 1) {
+                        return { gender: 'female', confidence: 'low', method: 'female-suffix-heuristic', matchedWord: word, suffix };
+                    }
+                }
+            }
+
+            // ── DEFAULT: male (logged as unmatched for future dictionary improvement) ──
+            console.warn(`[Gender Detection] Unmatched name: "${fullName}" → defaulting to male`);
+            return { gender: 'male', confidence: 'none', method: 'default-fallback', matchedWord: words[0] };
         }
 
         document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
@@ -347,17 +608,21 @@
             const phone = document.getElementById('phone').value.trim();
             const goal = document.getElementById('goal').value;
 
-            // Detect gender based on name
-            const detectedGender = detectGender(fullName);
-            const whatsappLink = detectedGender === 'female' ? CONFIG.FEMALE_WHATSAPP : CONFIG.MALE_WHATSAPP;
+            // Detect gender based on name (returns object with gender, confidence, method)
+            const detection = detectGender(fullName);
+            const whatsappLink = detection.gender === 'female' ? CONFIG.FEMALE_WHATSAPP : CONFIG.MALE_WHATSAPP;
 
-            // Prepare data for Google Sheets
+            // Prepare data for Google Sheets (includes detection analytics)
             const formData = {
                 timestamp: new Date().toISOString(),
                 fullName: fullName,
                 phone: phone,
                 goal: goal,
-                detectedGender: detectedGender
+                detectedGender: detection.gender,
+                detectionConfidence: detection.confidence,
+                detectionMethod: detection.method,
+                matchedWord: detection.matchedWord || '',
+                closestName: detection.closestName || ''
             };
 
             // Show loading
