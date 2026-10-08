@@ -229,7 +229,7 @@
                 </div>
                 <div class="phone-wrapper">
                     <div class="country-code">🇲🇦 +212</div>
-                    <input type="tel" id="phone" name="phone" class="phone-input" required placeholder="06 00 00 00 00" pattern="[0-9]{10}">
+                    <input type="tel" id="phone" name="phone" class="phone-input" placeholder="06 00 00 00 00">
                 </div>
                 <span class="error" id="phoneError">Please enter a valid phone number</span>
             </div>
@@ -662,17 +662,6 @@
                 this.classList.add('error-field');
             } else {
                 document.getElementById('nameError').style.display = 'none';
-                this.classList.remove('error-field');
-            }
-        });
-
-        document.getElementById('phone').addEventListener('blur', function() {
-            const phoneValue = this.value.trim();
-            if (phoneValue.length < 10) {
-                document.getElementById('phoneError').style.display = 'block';
-                this.classList.add('error-field');
-            } else {
-                document.getElementById('phoneError').style.display = 'none';
                 this.classList.remove('error-field');
             }
         });
